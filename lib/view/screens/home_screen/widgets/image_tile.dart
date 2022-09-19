@@ -18,35 +18,33 @@ class ImageTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    return Container(
-      child: Column(
-        children: [
-          CardRow(
-            color: Colors.black,
-            cardIndex:cardIndex ,
-          ),
-          Stack(
-            alignment: AlignmentDirectional.center,
-            children: [
-              Container(
-                height: screenHeight * 0.5,
-                width: screenWidth,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage(
-                            Data.homeScreenBodyImages[imageIndex].image
-                        ),
-                        fit: BoxFit.cover
-                    )
-                ),
+    final tileHeight = MediaQuery.of(context).size.height * 0.5;
+    return Column(
+      children: [
+        CardRow(
+          color: Colors.black,
+          cardIndex:cardIndex ,
+        ),
+        Stack(
+          alignment: AlignmentDirectional.center,
+          children: [
+            Container(
+              height: tileHeight,
+              width: screenWidth,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage(
+                          Data.homeScreenBodyImages[imageIndex].image
+                      ),
+                      fit: BoxFit.cover
+                  )
               ),
-             const  Positioned(child: BigLikeAnimation())
-            ],
-          ),
-          LowerSection(imageIndex: imageIndex)
-        ],
-      ),
+            ),
+             Positioned(child: BigLikeAnimation(width:tileHeight ,index: imageIndex,reelScreen: false,))
+          ],
+        ),
+        LowerSection(imageIndex: imageIndex)
+      ],
     );
   }
 }

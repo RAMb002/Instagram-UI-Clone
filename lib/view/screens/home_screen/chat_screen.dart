@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/model/user_data/data.dart';
+import 'package:instagram_clone/view/screens/constants.dart';
 import 'package:instagram_clone/view/screens/home_screen/widgets/horizontal_list.dart';
 import 'package:instagram_clone/view/screens/widgets/fake_textfield.dart';
 
@@ -91,11 +92,12 @@ class ChatScreen extends StatelessWidget {
                                   // width: screenWidth * 0.18,
                                   // margin: EdgeInsets.all(2),
                                   decoration: BoxDecoration(
-                                      color: Colors.grey,
+                                      color: kUnloadedColor,
                                       shape: BoxShape.circle,
                                       image: DecorationImage(
                                           image: NetworkImage(Data.horizontalList[index].imageUrl),
-                                          fit: BoxFit.cover)),
+                                          fit: BoxFit.cover)
+                                  ),
                                 ),
                                 Positioned(
                                   bottom: screenWidth * 0.01,
@@ -178,10 +180,11 @@ class ChatScreen extends StatelessWidget {
                               height: 60,
                               width: 60,
                               decoration: BoxDecoration(
-                                  color: Colors.black45,
+                                  color: kUnloadedColor,
                                   shape: BoxShape.circle,
                                   image: DecorationImage(
-                                      image: NetworkImage(Data.horizontalList[index].imageUrl))),
+                                      image: NetworkImage(Data.horizontalList[index].imageUrl),),
+                              ),
                             ),
                             const SizedBox(
                               width: 10,

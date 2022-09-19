@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/model/user_data/data.dart';
+import 'package:instagram_clone/view/screens/constants.dart';
 
 class SuggestedReels extends StatelessWidget {
   const SuggestedReels({Key? key}) : super(key: key);
@@ -54,11 +55,11 @@ class SuggestedReels extends StatelessWidget {
                       Container(
                         width: screenWidth * 0.32,
                         decoration: BoxDecoration(
-                          color: Colors.grey,
+                          color: kUnloadedColor,
                           borderRadius:const BorderRadius.all(Radius.circular(4)),
                           image: DecorationImage(
                             image: AssetImage(
-                                Data.suggestedReels[index].toString()
+                                Data.suggestedReels[index].image
                             ),
                             fit: BoxFit.cover
                           )

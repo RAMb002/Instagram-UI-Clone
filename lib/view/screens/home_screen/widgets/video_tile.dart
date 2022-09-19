@@ -19,9 +19,11 @@ class VideoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+
     print('video');
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    final tileHeight = MediaQuery.of(context).size.height * 0.78 ;
     return Padding(padding:const EdgeInsets.symmetric(vertical: 10),
       child: Column(
         children: [
@@ -29,7 +31,7 @@ class VideoTile extends StatelessWidget {
             alignment: AlignmentDirectional.center,
             children: [
               Container(
-                height: screenHeight * 0.78,
+                height: tileHeight,
                 width: screenWidth,
                 decoration: BoxDecoration(
                     image: DecorationImage(
@@ -45,9 +47,9 @@ class VideoTile extends StatelessWidget {
                    left: 0,
                    right: 0,
                    child: CardRow(cardIndex: cardIndex,)),
-              
-              const Positioned(child: BigLikeAnimation())
-              
+
+               Positioned(child: BigLikeAnimation(width: tileHeight,index: imageIndex,reelScreen: false,))
+
 
             ],
           ),
@@ -69,18 +71,61 @@ class BookMarkIcon extends StatefulWidget {
 
 class _BookMarkIconState extends State<BookMarkIcon> {
 
-  bool _status = false;
+  double scale = 1;
+  int durationMilliSeconds = 100;
+  bool bookMarkIconStatus  = false;
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      padding: EdgeInsets.zero,
-        splashRadius: 0.1,
-        constraints: const BoxConstraints(),
-        onPressed: (){
+
+
+
+
+    GestureDetector gestureDetector = GestureDetector(
+      onTap: ()async{
+
         setState(() {
-          _status = !_status;
+
+            bookMarkIconStatus=!bookMarkIconStatus;
+
+          // widget.isLike && !pLike.getBigLikeGestureStatus(widget.index) ? pLike.changeLikeDigit(widget.index) : bookMarkIconStatus=!bookMarkIconStatus;
         });
-        }, icon: Icon(_status ?  Icons.bookmark_outlined :Icons.bookmark_border));
+        setState(() {
+          scale=0.7;
+        });
+        await Future.delayed(const Duration(milliseconds: 200));
+        setState(() {
+          scale = 1.1;
+        });
+        await Future.delayed(const Duration(milliseconds: 200));
+        setState(() {
+          scale = 0.9;
+          durationMilliSeconds = 50;
+        });
+        await Future.delayed(const Duration(milliseconds: 100));
+        setState(() {
+          scale = 1;
+        });
+
+      },
+      child:  AnimatedScale(
+        scale: scale,
+        duration:  Duration(milliseconds: durationMilliSeconds),
+        child:  Icon(
+           bookMarkIconStatus ? Icons.bookmark_outlined : Icons.bookmark_border,
+          color:  Colors.black,
+          size: 25,
+        ),
+      ),
+    );
+
+    // gestureDetector.onTap?.call();
+
+    // print("like");
+
+
+    return  gestureDetector;
+
+
   }
 }
 

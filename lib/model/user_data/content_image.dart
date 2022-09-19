@@ -1,6 +1,8 @@
 class ContentImage{
   final String image;
-  final String likes;
+   int likes;
+   bool likeStatus;
+   bool bigLikeGesture;
   final String comment;
   final int totalComments;
   final String day;
@@ -8,8 +10,11 @@ class ContentImage{
   ContentImage({
     required this.image,
     required this.likes,
+     this.likeStatus=false,
+    this.bigLikeGesture = false,
     required this.comment,
     required this.totalComments,
     required this.day
 });
+
 }

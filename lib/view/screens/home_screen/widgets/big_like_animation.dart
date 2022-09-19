@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/view_model/home_screen/likeDigit_provider.dart';
+import 'package:provider/provider.dart';
 
 class BigLikeAnimation extends StatefulWidget {
-  const BigLikeAnimation({Key? key}) : super(key: key);
+  const BigLikeAnimation({Key? key,required this.width,required this.index,required this.reelScreen}) : super(key: key);
+
+  final double width;
+  final int index;
+  final bool reelScreen;
 
   @override
   _BigLikeAnimationState createState() => _BigLikeAnimationState();
@@ -9,16 +15,22 @@ class BigLikeAnimation extends StatefulWidget {
 
 class _BigLikeAnimationState extends State<BigLikeAnimation> {
   double scale = 0;
-  bool status = false;
+  // bool status = false;
   int durationMilliSeconds = 100;
   @override
   Widget build(BuildContext context) {
+
+
+
+    final pLike = Provider.of<LikeDigitProvider>(context,listen: false);
     return  GestureDetector(
       onDoubleTap: ()async{
+        pLike.changeLikeGestureStatus(widget.index, true,widget.reelScreen);
+
         setState(() {
-          status=!status;
-        });
-        setState(() {
+          if(!pLike.getLikeStatus(widget.index,widget.reelScreen)){
+            pLike.changeLikeDigit(widget.index,widget.reelScreen);
+          }
           scale = 1;
         });
         await Future.delayed(const Duration(milliseconds: 200));
@@ -47,7 +59,7 @@ class _BigLikeAnimationState extends State<BigLikeAnimation> {
         });
       },
       child:  Container(
-        height: 300,
+        height: widget.width,
         width: double.infinity,
         color: Colors.transparent,
         child: AnimatedScale(

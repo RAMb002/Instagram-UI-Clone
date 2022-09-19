@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/model/user_data/data.dart';
+import 'package:instagram_clone/view/screens/constants.dart';
 
 class CardRow extends StatelessWidget {
    CardRow({
@@ -38,7 +39,8 @@ class CardRow extends StatelessWidget {
                   // margin: EdgeInsets.all(2),
                   decoration: BoxDecoration(
                       border: Border.all(color: Colors.white,width: 1),
-                      color: Colors.grey, shape: BoxShape.circle,
+                      color: kUnloadedColor,
+                      shape: BoxShape.circle,
                       image: DecorationImage(
                           image: NetworkImage(
                               Data.horizontalList[cardIndex].imageUrl

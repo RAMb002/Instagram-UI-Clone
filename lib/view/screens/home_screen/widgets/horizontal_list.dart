@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/model/user_data/data.dart';
+import 'package:instagram_clone/view/screens/constants.dart';
 
 class HorizontalList extends StatelessWidget {
   const HorizontalList({Key? key}) : super(key: key);
@@ -107,7 +108,8 @@ class HorizontalList extends StatelessWidget {
                           // margin: EdgeInsets.all(2),
                           decoration: BoxDecoration(
                               border: Border.all(color: Colors.white,width: 3),
-                              color: Colors.grey, shape: BoxShape.circle,
+                              color: kUnloadedColor,
+                              shape: BoxShape.circle,
                               image: DecorationImage(
                                   image: NetworkImage(
                                       Data.horizontalList[index].imageUrl

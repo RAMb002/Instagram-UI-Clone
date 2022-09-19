@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/model/user_data/data.dart';
 import 'package:instagram_clone/view/screens/home_screen/widgets/video_tile.dart';
+import 'package:instagram_clone/view_model/home_screen/likeDigit_provider.dart';
+import 'package:provider/provider.dart';
 
 class LowerSection extends StatelessWidget {
   const LowerSection({
@@ -23,7 +25,7 @@ class LowerSection extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  HeartIconAnimation(),
+                  HeartIconAnimation(index: imageIndex,isLike: true,reelScreen: false,),
                   const SizedBox(
                     width: 20,
                   ),
@@ -52,15 +54,20 @@ class LowerSection extends StatelessWidget {
                   ),
                 ],
               ),
-              const BookMarkIcon()
+               HeartIconAnimation(index: imageIndex,isLike: false,reelScreen: false,),
             ],
           ),
           const SizedBox(
             height: 10,
           ),
-          Text(
-            Data.homeScreenBodyImages[imageIndex].likes,
-            style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          Consumer<LikeDigitProvider>(
+            builder: (context,data,child){
+              return Text(
+                "${data.getLikeDigit(imageIndex,false)} likes",
+                style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              );
+            }
+
           ),
           const SizedBox(
             height: 5,
@@ -98,22 +105,47 @@ class LowerSection extends StatelessWidget {
 }
 
 class HeartIconAnimation extends StatefulWidget {
-  const HeartIconAnimation({Key? key}) : super(key: key);
+  const HeartIconAnimation({Key? key,required this.index,required this.isLike,this.iconColor = Colors.black,this.iconSize=25,required this.reelScreen}) : super(key: key);
+
+  final int index;
+  final bool isLike;
+  final Color iconColor;
+  final double iconSize;
+  final bool reelScreen;
 
   @override
   _HeartIconAnimationState createState() => _HeartIconAnimationState();
 }
 
 class _HeartIconAnimationState extends State<HeartIconAnimation> {
+
   double scale = 1;
-  bool status = false;
   int durationMilliSeconds = 100;
+  bool bookMarkIconStatus  = false;
   @override
   Widget build(BuildContext context) {
-    return  GestureDetector(
+
+    final pLike =Provider.of<LikeDigitProvider>(context);
+    bool status = pLike.getLikeStatus(widget.index,widget.reelScreen);
+
+
+
+    GestureDetector gestureDetector = GestureDetector(
       onTap: ()async{
+
         setState(() {
-          status=!status;
+          if(widget.isLike && !pLike.getBigLikeGestureStatus(widget.index,widget.reelScreen)){
+            pLike.changeLikeDigit(widget.index,widget.reelScreen);
+            print('bbbb');
+          }
+          // else if(!widget.isLike && pLike.getBigLikeGestureStatus(widget.index)){
+          //   pLike.changeLikeDigit(widget.index);
+          //   print('aaaa');
+          // }
+          else{
+            bookMarkIconStatus=!bookMarkIconStatus;
+          }
+          // widget.isLike && !pLike.getBigLikeGestureStatus(widget.index) ? pLike.changeLikeDigit(widget.index) : bookMarkIconStatus=!bookMarkIconStatus;
         });
         setState(() {
           scale=0.7;
@@ -131,26 +163,37 @@ class _HeartIconAnimationState extends State<HeartIconAnimation> {
         setState(() {
           scale = 1;
         });
+
       },
       child:  AnimatedScale(
         scale: scale,
         duration:  Duration(milliseconds: durationMilliSeconds),
         child:  Icon(
-          status ? Icons.favorite_outlined :Icons.favorite_outline_sharp,
-          color: status ? Colors.red : Colors.black,
-          size: 25,
+          widget.isLike ? status ? Icons.favorite_outlined :Icons.favorite_outline_sharp
+          : bookMarkIconStatus ? Icons.bookmark_outlined : Icons.bookmark_border,
+          color: widget.isLike ? status ? Colors.red : widget.iconColor : Colors.black,
+          size: widget.iconSize,
         ),
       ),
     );
 
-    IconButton(
-        padding: EdgeInsets.zero,
-        constraints: const BoxConstraints(),
-        splashRadius: 0.1,
-        onPressed: () {},
-        icon: const Icon(
-          Icons.favorite_outline_sharp,
-          color: Colors.black,
-        ));
+    if(pLike.getBigLikeGestureStatus(widget.index,widget.reelScreen) && widget.isLike){
+      // print(pLike.getBigLikeGestureStatus(widget.index));
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        gestureDetector.onTap?.call();
+        print('called');
+          pLike.changeLikeGestureStatus(widget.index, false,widget.reelScreen);
+
+      });
+
+    }
+    // gestureDetector.onTap?.call();
+
+    // print("like");
+
+
+    return  gestureDetector;
+
+
   }
 }
