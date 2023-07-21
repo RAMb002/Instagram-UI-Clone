@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/model/user_data/data.dart';
+import 'package:instagram_clone/view/screens/home_screen/widgets/send_screen.dart';
 import 'package:instagram_clone/view/screens/home_screen/widgets/video_tile.dart';
 import 'package:instagram_clone/view_model/home_screen/likeDigit_provider.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 
 class LowerSection extends StatelessWidget {
@@ -42,14 +44,26 @@ class LowerSection extends StatelessWidget {
                   const SizedBox(
                     width: 20,
                   ),
-                  Container(
-                    height: 22,
-                    width: 22,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage(
-                        "assets/images/send.png",
-                      )),
+                  GestureDetector(
+                    onTap: (){
+                      showModalBottomSheet(
+                          backgroundColor: Colors.transparent,
+                          isScrollControlled: true,
+                          isDismissible: true,
+                          useRootNavigator: true,
+                          context: context,
+                          builder: (context) => SendScreen());
+                    },
+                    child: Container(
+                      height: 22,
+                      width: 22,
+                      decoration: const BoxDecoration(
+                        // color: Colors.red,
+                        image: DecorationImage(
+                            image: AssetImage(
+                          "assets/images/send.png",
+                        )),
+                      ),
                     ),
                   ),
                 ],
@@ -136,12 +150,8 @@ class _HeartIconAnimationState extends State<HeartIconAnimation> {
         setState(() {
           if(widget.isLike && !pLike.getBigLikeGestureStatus(widget.index,widget.reelScreen)){
             pLike.changeLikeDigit(widget.index,widget.reelScreen);
-            print('bbbb');
           }
-          // else if(!widget.isLike && pLike.getBigLikeGestureStatus(widget.index)){
-          //   pLike.changeLikeDigit(widget.index);
-          //   print('aaaa');
-          // }
+
           else{
             bookMarkIconStatus=!bookMarkIconStatus;
           }
@@ -178,19 +188,14 @@ class _HeartIconAnimationState extends State<HeartIconAnimation> {
     );
 
     if(pLike.getBigLikeGestureStatus(widget.index,widget.reelScreen) && widget.isLike){
-      // print(pLike.getBigLikeGestureStatus(widget.index));
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         gestureDetector.onTap?.call();
-        print('called');
           pLike.changeLikeGestureStatus(widget.index, false,widget.reelScreen);
 
       });
 
     }
     // gestureDetector.onTap?.call();
-
-    // print("like");
-
 
     return  gestureDetector;
 

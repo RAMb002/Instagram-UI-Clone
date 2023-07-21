@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/model/user_data/data.dart';
 import 'package:instagram_clone/view/screens/constants.dart';
+import 'package:instagram_clone/view/screens/profile_screen/profile_screen.dart';
+import 'package:instagram_clone/view_model/profile_screen/like_profile_scroll_provider.dart';
+import 'package:instagram_clone/view_model/profile_screen/reel_profile_scroll_provider.dart';
+import 'package:instagram_clone/view_model/screen_index_counts.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:provider/provider.dart';
 
 class LikeScreen extends StatelessWidget {
   const LikeScreen({Key? key}) : super(key: key);
@@ -52,7 +58,28 @@ class LikeScreen extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IgnorePointer(
+                      GestureDetector(
+                        onTap: (){
+                          final pScrollProvider=Provider.of<LikeProfileScrollProvider>(context, listen: false);
+
+                          pScrollProvider.changeOffSetValue(0);
+
+
+                          final pScreenIndexCount = Provider.of<ScreenIndexCountsProvider>(context,listen: false);
+                          pScreenIndexCount.incrementOrDecrementLikeScreenCount(increment: true);
+                          PersistentNavBarNavigator.pushNewScreen(
+                            context,
+                            screen: ProfileScreen(
+                              data: Data.horizontalList[index],
+                              isHomeScreen: false,
+                              isReelScreen: false,
+                              isLikeScreen: true,
+                              isMyProfile: false,
+                            ),
+                            withNavBar: true, // OPTIONAL VALUE. True by default.
+                            pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                          );
+                        },
                         child: Container(
                           height: 45,
                           width: 45,

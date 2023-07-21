@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-class ScrollProvider extends ChangeNotifier{
+class HomeProfileScrollProvider extends ChangeNotifier{
   double _offset=0;
   bool _expandStatus = true;
 

@@ -15,7 +15,6 @@ class Data{
     Content(imageUrl: "https://randomuser.me/api/portraits/women/67.jpg", name: "Marion Burke", message: "I am gonna get married soon · 6 h", time: "17 tue",status: false,subMessage: "seen",followers: 2453,following: 4530),
     Content(imageUrl: "https://randomuser.me/api/portraits/women/33.jpg", name: "Eleanor Perez", message: "Lot of Bills to pay · 3 h", time: "2 mon",status: false,subMessage: "sent 17m ago",followers: 1245,following: 1453),
 
-
   ];
 
   static List homeScreenBodyImages = [
@@ -40,6 +39,20 @@ class Data{
     ReelData(image: "assets/images/koreanTwo.jpeg", likes: 10396, comment: "The Blackpink",totalComments: 1045,day: "4 days ago",imageUrl: "https://randomuser.me/api/portraits/women/1.jpg", name: "Lorraine Wilson",),
     ReelData(image: "assets/images/food.webp", likes: 10396, comment: "The best pasta ever",totalComments: 1045,day: "4 days ago",imageUrl: "https://randomuser.me/api/portraits/women/33.jpg", name: "Eleanor Perez")
 
+  ];
+
+  static List storyList = [
+    "assets/images/street.jpg",
+    "assets/images/girll.jpg",
+    "assets/images/animeOne.jpg",
+    "assets/images/koreanFour.jpg",
+
+    "assets/images/koreanThree.jpg",
+  "assets/images/animeReelTwo.webp",
+    "assets/images/koreanTwo.jpeg"
+        "assets/images/food.webp",
+    "assets/images/animeOne.jpg",
+    "assets/images/street.jpg",
   ];
 
   static List myProfile = [

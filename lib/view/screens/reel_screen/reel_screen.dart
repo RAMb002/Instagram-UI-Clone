@@ -6,8 +6,15 @@ import 'package:instagram_clone/model/user_data/data.dart';
 import 'package:instagram_clone/view/screens/constants.dart';
 import 'package:instagram_clone/view/screens/home_screen/widgets/big_like_animation.dart';
 import 'package:instagram_clone/view/screens/home_screen/widgets/lower_section.dart';
+import 'package:instagram_clone/view/screens/home_screen/widgets/send_screen.dart';
+import 'package:instagram_clone/view/screens/profile_screen/profile_screen.dart';
+import 'package:instagram_clone/view/screens/reel_screen/more_menu.dart';
 import 'package:instagram_clone/view_model/home_screen/likeDigit_provider.dart';
+import 'package:instagram_clone/view_model/profile_screen/reel_profile_scroll_provider.dart';
+import 'package:instagram_clone/view_model/reel_screen_index_counts.dart';
+import 'package:instagram_clone/view_model/screen_index_counts.dart';
 import 'package:marquee/marquee.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -108,9 +115,38 @@ class ReelScreen extends StatelessWidget {
 
                         ),
                         const SizedBox(height: iconGap,),
-                        Image.asset("assets/images/send.png",height: 30,width: 30,color: Colors.white,),
+                        GestureDetector(
+                            onTap: (){
+                              showModalBottomSheet(
+                                  backgroundColor: Colors.transparent,
+                                  isScrollControlled: true,
+                                  isDismissible: true,
+                                  useRootNavigator: true,
+                                  context: context,
+                                  builder: (context) => SendScreen());
+                            },
+                            child: Image.asset("assets/images/send.png",height: 30,width: 30,color: Colors.white,)),
                         const SizedBox(height: iconGap,),
-                        const Icon(Icons.more_vert,color:Colors.white,),
+
+                         IconButton(
+                           padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                          onPressed : (){
+                             showModalBottomSheet(
+                               backgroundColor: Colors.white,
+                                 shape: const RoundedRectangleBorder(
+                                   borderRadius: BorderRadius.all(Radius.circular(12))
+                                 ),
+                                 context: context, builder: (context)=>
+                             const MoreMenu(
+                               initialSize: 0.75,
+                               icon: Icons.visibility_off_outlined,
+                               menuItemText: "Not Interested",
+                             ));
+                          },
+                          icon : Icon(Icons.more_vert,color:Colors.white,),
+
+                        ),
                         const SizedBox(height: iconGap,),
                         Container(
                           height: 30,
@@ -144,26 +180,57 @@ class ReelScreen extends StatelessWidget {
                        children: [
                          Row(
                             children: [
-                              Container(
-                                height: 30,
-                                width: 30,
-                                decoration: BoxDecoration(
-                                  color: kUnloadedColor,
-                                    shape: BoxShape.circle,
-                                    image: DecorationImage(
-                                        image: NetworkImage(
-                                            Data.suggestedReels[index].imageUrl
+                              GestureDetector(
+                                onTap: (){
+                                  final pScrollProvider=Provider.of<ReelProfileScrollProvider>(context, listen: false);
+
+                                  pScrollProvider.changeOffSetValue(0);
+
+
+                                  final pScreenIndexCount = Provider.of<ReelScreenIndexCountProvider>(context,listen: false);
+                                  pScreenIndexCount.incrementOrDecrementReelScreenCount(increment: true);
+                                  PersistentNavBarNavigator.pushNewScreen(
+                                    context,
+                                    screen: ProfileScreen(
+                                      data: Data.horizontalList[Data.horizontalList.length-index -1],
+                                      isHomeScreen: false,
+                                      isReelScreen: true,
+                                      isLikeScreen: false,
+                                      isMyProfile: false,
+                                    ),
+                                    withNavBar: true, // OPTIONAL VALUE. True by default.
+                                    pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                                  );
+                                },
+                                child: Container(
+                                  color: Colors.transparent,
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        height: 30,
+                                        width: 30,
+                                        decoration: BoxDecoration(
+                                            color: kUnloadedColor,
+                                            shape: BoxShape.circle,
+                                            image: DecorationImage(
+                                                image: NetworkImage(
+                                                    Data.horizontalList[Data.horizontalList.length-index -1].imageUrl
+                                                ),
+                                                fit: BoxFit.cover
+                                            )
                                         ),
-                                        fit: BoxFit.cover
-                                    )
+                                      ),
+                                      const SizedBox(width: 10,),
+                                      Text(Data.horizontalList[Data.horizontalList.length-index -1].name,
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold
+                                        ),),
+                                    ],
+                                  ),
                                 ),
                               ),
-                             const SizedBox(width: 10,),
-                              Text(Data.suggestedReels[index].name,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold
-                              ),),
+
                               const SizedBox(width: 10,),
                                FollowButton(index: index,)
 

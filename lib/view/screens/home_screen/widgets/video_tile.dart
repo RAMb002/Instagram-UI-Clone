@@ -19,9 +19,6 @@ class VideoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-
-    print('video');
     final screenWidth = MediaQuery.of(context).size.width;
     final tileHeight = MediaQuery.of(context).size.height * 0.78 ;
     return Padding(padding:const EdgeInsets.symmetric(vertical: 10),
@@ -48,7 +45,7 @@ class VideoTile extends StatelessWidget {
                    right: 0,
                    child: CardRow(cardIndex: cardIndex,)),
 
-               Positioned(child: BigLikeAnimation(width: tileHeight,index: imageIndex,reelScreen: false,))
+               Positioned(child: BigLikeAnimation(width: tileHeight * 0.8,index: imageIndex,reelScreen: false,))
 
 
             ],
@@ -119,8 +116,6 @@ class _BookMarkIconState extends State<BookMarkIcon> {
     );
 
     // gestureDetector.onTap?.call();
-
-    // print("like");
 
 
     return  gestureDetector;

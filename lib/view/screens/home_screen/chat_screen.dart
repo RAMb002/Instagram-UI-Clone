@@ -21,7 +21,7 @@ class ChatScreen extends StatelessWidget {
         elevation: 0.3,
         leading: IconButton(
           onPressed: () {
-            pageController.animateToPage(1, duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
+            pageController.animateToPage(0, duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
           },
           splashRadius: 0.1,
           icon: const Icon(

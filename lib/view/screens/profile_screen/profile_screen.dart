@@ -3,15 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:instagram_clone/model/user_data/content.dart';
 import 'package:instagram_clone/model/user_data/data.dart';
 import 'package:instagram_clone/view/screens/constants.dart';
+import 'package:instagram_clone/view/screens/profile_screen/profile_settings.dart';
+import 'package:instagram_clone/view_model/profile_screen/home_profile_scroll_provider.dart';
+import 'package:instagram_clone/view_model/profile_screen/like_profile_scroll_provider.dart';
+import 'package:instagram_clone/view_model/profile_screen/reel_profile_scroll_provider.dart';
 import 'package:instagram_clone/view_model/profile_screen/scroll_provider.dart';
 import 'package:instagram_clone/view_model/profile_screen/tab_index.dart';
+import 'package:instagram_clone/view_model/reel_screen_index_counts.dart';
+import 'package:instagram_clone/view_model/screen_index_counts.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key, this.isMyProfile = true, required this.data}) : super(key: key);
+  const ProfileScreen({Key? key, this.isMyProfile = true, required this.data,
+  required this.isReelScreen, required this.isHomeScreen,required this.isLikeScreen}) : super(key: key);
 
   final bool isMyProfile;
   final Content data;
+  final bool isReelScreen;
+  final bool isHomeScreen;
+  final bool isLikeScreen;
+
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -28,10 +39,23 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
   void initState() {
     // TODO: implement initState
     super.initState();
-    final pScrollProvider = Provider.of<ScrollProvider>(context, listen: false);
+    late final pScrollProvider;
+    if(widget.isLikeScreen){
+      pScrollProvider = Provider.of<LikeProfileScrollProvider>(context, listen: false);
+    }
+    else if(widget.isHomeScreen){
+      pScrollProvider = Provider.of<HomeProfileScrollProvider>(context, listen: false);
+    }
+    else if(widget.isReelScreen){
+      pScrollProvider=Provider.of<ReelProfileScrollProvider>(context, listen: false);
+    }
+    else {
+      pScrollProvider = Provider.of<ScrollProvider>(context, listen: false);
+    }
 
     _tabController = TabController(initialIndex: 0, length: 3, vsync: this);
     _listScrollController.addListener(() {
+
       pScrollProvider.changeOffSetValue(_listScrollController.offset);
     });
 
@@ -48,10 +72,23 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    late final pScroll;
+    if(widget.isLikeScreen){
+      pScroll = Provider.of<LikeProfileScrollProvider>(context, listen: false);
+    }
+    else if(widget.isHomeScreen){
+      pScroll = Provider.of<HomeProfileScrollProvider>(context, listen: false);
+    }
+    else if(widget.isReelScreen){
+      pScroll=Provider.of<ReelProfileScrollProvider>(context, listen: false);
+    }
+    else {
+      pScroll = Provider.of<ScrollProvider>(context, listen: false);
+    }
+
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     void onTap(int index) {
-      final pScroll =Provider.of<ScrollProvider>(context, listen: false);
       Provider.of<TabIndex>(context, listen: false).changeIndex(index);
       if(!pScroll.expandStatus){
         if(pScroll.offsetValue()<screenWidth * 0.83){
@@ -63,45 +100,101 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
       }
       else{
         if(pScroll.offsetValue()< screenWidth * 1.45){
-          // print('yes');
           _listScrollController.jumpTo(pScroll.offsetValue());
         }
         else{
           _listScrollController.jumpTo(screenWidth * 1.46);
         }
       }
-      // print(Provider.of<TabIndex>(context, listen: false).index);
-      // print(index);
     };
     _tabController.addListener(() {
       Provider.of<TabIndex>(context, listen: false).changeIndex(_tabController.index);
       onTap(_tabController.index);
     });
 
-
-    // _listScrollController.addListener(() {
-    //   // pScrollProvider.changeListOffset(_listScrollController.offset);
-    //   print("list view offset is ${_listScrollController.offset}");
-    //   if (_listScrollController.offset > screenWidth * 1.31) {
-    //     print('reached');
-    //     pScrollProvider.changeGridStatus(true);
-    //   }
-    // });
-    //
-    // _gridScrollController.addListener(() {
-    //   // pScrollProvider.changeGridOffset(_gridScrollController.offset);
-    //   print("grid view offset is ${_gridScrollController.offset}");
-    //   if (pScrollProvider.gridStatus) {
-    //     if (_gridScrollController.offset == 0) {
-    //       pScrollProvider.changeGridStatus(false);
-    //     }
-    //   }
-    // });
+    Consumer tabViewVisibility(){
+      if(widget.isHomeScreen){
+        return Consumer<HomeProfileScrollProvider>(
+          builder: (context, data, child) => Visibility(
+            visible: data.expandStatus
+                ? data.offsetValue() > screenWidth * 1.44
+                : data.offsetValue() > screenWidth * 0.83,
+            child: MyTabView(
+                screenWidth: screenWidth,
+                tabController: _tabController,
+                onTap: onTap
+            ),
+          ),
+        );
+      }
+      else if(widget.isLikeScreen){
+        return Consumer<LikeProfileScrollProvider>(
+          builder: (context, data, child) => Visibility(
+            visible: data.expandStatus
+                ? data.offsetValue() > screenWidth * 1.44
+                : data.offsetValue() > screenWidth * 0.83,
+            child: MyTabView(
+                screenWidth: screenWidth,
+                tabController: _tabController,
+                onTap: onTap
+            ),
+          ),
+        );
+      }
+      else if(widget.isReelScreen){
+        return Consumer<ReelProfileScrollProvider>(
+          builder: (context, data, child) => Visibility(
+            visible: data.expandStatus
+                ? data.offsetValue() > screenWidth * 1.44
+                : data.offsetValue() > screenWidth * 0.83,
+            child: MyTabView(
+                screenWidth: screenWidth,
+                tabController: _tabController,
+                onTap: onTap
+            ),
+          ),
+        );
+      }
+      else {
+        return Consumer<ScrollProvider>(
+          builder: (context, data, child) => Visibility(
+            visible: data.expandStatus
+                ? data.offsetValue() > screenWidth * 1.44
+                : data.offsetValue() > screenWidth * 0.83,
+            child: MyTabView(
+                screenWidth: screenWidth,
+                tabController: _tabController,
+                onTap: onTap
+            ),
+          ),
+        );
+      }
+    }
     return Scaffold(
         extendBody: false,
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0.1,
+          leading: !widget.isMyProfile ? IconButton(onPressed: (){
+            final pReelScreenIndexCount = Provider.of<ReelScreenIndexCountProvider>(context,listen: false);
+            final pScreenIndexCount = Provider.of<ScreenIndexCountsProvider>(context,listen: false);
+
+
+            if(widget.isReelScreen && pReelScreenIndexCount.reelScreenCount!=0){
+            pReelScreenIndexCount.incrementOrDecrementReelScreenCount(increment: false);
+            }
+            else if(widget.isLikeScreen && pScreenIndexCount.likeScreenCount!=0){
+              pScreenIndexCount.incrementOrDecrementLikeScreenCount(increment: false);
+            }
+            else if(widget.isHomeScreen && pScreenIndexCount.homeScreenCount!=0){
+              pScreenIndexCount.incrementOrDecrementHomeScreenCount(increment: false);
+            }
+
+            Navigator.pop(context);
+          }, icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+          )) : null,
           title: Text(
             widget.isMyProfile ? "_._Rambo_._._" : widget.data.name,
             style: const TextStyle(color: Colors.black),
@@ -126,7 +219,18 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
               padding: const EdgeInsets.only(right: 8.0),
               child: IconButton(
                   splashRadius: 0.1,
-                  onPressed: () {},
+                  onPressed: () {
+                    showModalBottomSheet(
+
+                      useRootNavigator: true,
+                        isScrollControlled : true,
+                        // backgroundColor: Colors.white,
+                        shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(12))
+                        ),
+                        context: context, builder: (context)=>
+                    const ProfileSettings());
+                  },
                   icon: const Icon(
                     Icons.menu,
                     color: Colors.black,
@@ -167,7 +271,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                                         ),
                                         fit: BoxFit.cover),
                                 shape: BoxShape.circle,
-                                color: Colors.red),
+                                color: kUnloadedColor),
                           ),
                           const ProfileData(
                             digit: 2,
@@ -207,7 +311,14 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                         ],
                       ),
                     ),
-                    DiscoverPeople(screenWidth: screenWidth, screenHeight: screenHeight),
+                    DiscoverPeople(
+                      screenWidth: screenWidth,
+                      screenHeight: screenHeight,
+                    isReelScreen: widget.isReelScreen,
+                      isHomeScreen: widget.isHomeScreen,
+                      isProfileScreen: widget.isMyProfile,
+                      isLikeScreen: widget.isLikeScreen,
+                    ),
                     SizedBox(
                       height: screenWidth * 0.35,
                       // height: 100,
@@ -378,21 +489,12 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
             ),
             Positioned(
               top: 0,
-              child: Consumer<ScrollProvider>(
-                builder: (context, data, child) => Visibility(
-                  visible: data.expandStatus
-                      ? data.offsetValue() > screenWidth * 1.44
-                      : data.offsetValue() > screenWidth * 0.83,
-                  child: MyTabView(
-                    screenWidth: screenWidth,
-                    tabController: _tabController,
-                    onTap: onTap
-                  ),
-                ),
-              ),
+              child: tabViewVisibility()
             )
           ],
         ));
+
+
 
   }
 }
@@ -445,10 +547,18 @@ class DiscoverPeople extends StatefulWidget {
     super.key,
     required this.screenWidth,
     required this.screenHeight,
+  required this.isReelScreen,
+  required this.isHomeScreen,
+  required this.isProfileScreen,
+  required this.isLikeScreen
   });
 
   final double screenWidth;
   final double screenHeight;
+  final bool isProfileScreen;
+  final bool isReelScreen;
+  final bool isHomeScreen;
+  final bool isLikeScreen;
 
   @override
   State<DiscoverPeople> createState() => _DiscoverPeopleState();
@@ -458,7 +568,20 @@ class _DiscoverPeopleState extends State<DiscoverPeople> {
   // bool status = Provider.of<ScrollProvider>(context, listen: false).expandStatus;
   @override
   Widget build(BuildContext context) {
-    final pStatus = Provider.of<ScrollProvider>(context, listen: false);
+    late final pStatus;
+    if(widget.isLikeScreen){
+      pStatus = Provider.of<LikeProfileScrollProvider>(context.read(), listen: false);
+    }
+    else if(widget.isHomeScreen){
+      pStatus = Provider.of<HomeProfileScrollProvider>(context, listen: false);
+    }
+    else if(widget.isReelScreen){
+      pStatus=Provider.of<ReelProfileScrollProvider>(context, listen: false);
+    }
+    else {
+      // context.read<ScrollProvider>().expandStatus;
+      pStatus = Provider.of<ScrollProvider>(context, listen: false);
+    }
     return Column(
       children: [
         Padding(
@@ -468,19 +591,29 @@ class _DiscoverPeopleState extends State<DiscoverPeople> {
               SizedBox(
                 height: 33,
                 width: widget.screenWidth * 0.79,
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
-                      primary: Colors.grey.shade300, // background
-                      onPrimary: Colors.grey.shade400, // foreground
+                child: widget.isProfileScreen ? MyElevatedButton(
+                  textColor: Colors.black,
+                  buttonColor: Colors.grey.shade300,
+                  text: 'Edit Profile',
+                ) : Row(
+                  children: [
+                    const Expanded(
+                      child: MyElevatedButton(
+                        textColor: Colors.white,
+                        buttonColor: Colors.blue,
+                        text: 'Follow',
+                      ),
                     ),
-                    onPressed: () {},
-                    child: const Text(
-                      'Edit Profile',
-                      style: TextStyle(color: Colors.black, fontSize: 15),
-                    )),
+                    const SizedBox(width: 10,),
+                    Expanded(
+                      child: MyElevatedButton(
+                        textColor: Colors.black,
+                        buttonColor: Colors.grey.shade300,
+                        text: 'Message',
+                      ),
+                    )
+                  ],
+                ),
               ),
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.02,
@@ -499,7 +632,7 @@ class _DiscoverPeopleState extends State<DiscoverPeople> {
                         onPrimary: Colors.grey.shade400, // foreground
                       ),
                       onPressed: () {
-                        Provider.of<ScrollProvider>(context, listen: false).changeExpandStatus(!pStatus.expandStatus);
+                        pStatus.changeExpandStatus(!pStatus.expandStatus);
                         setState(() {
                           // status = !status;
                         });
@@ -633,6 +766,36 @@ class _DiscoverPeopleState extends State<DiscoverPeople> {
         ),
       ],
     );
+  }
+}
+
+class MyElevatedButton extends StatelessWidget {
+  const MyElevatedButton({
+    super.key,
+  required this.textColor,
+  required this.buttonColor,
+  required this.text
+  });
+
+  final Color textColor;
+  final Color buttonColor;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+          primary: buttonColor, // background
+          onPrimary: Colors.grey.shade400, // foreground
+        ),
+        onPressed: () {},
+        child:  Text(
+          text,
+          style: TextStyle(color:textColor, fontSize: 15),
+        ));
   }
 }
 

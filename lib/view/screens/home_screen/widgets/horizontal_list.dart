@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/model/user_data/data.dart';
 import 'package:instagram_clone/view/screens/constants.dart';
+import 'package:instagram_clone/view/screens/story_screen/story_screen.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 class HorizontalList extends StatelessWidget {
   const HorizontalList({Key? key}) : super(key: key);
@@ -84,60 +86,70 @@ class HorizontalList extends StatelessWidget {
                     SizedBox(width: 10,)
                   ],
                 ) : const SizedBox(),
-                SizedBox(
-                  // color: Colors.red,
-                  width: screenWidth * 0.2,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: screenHeight * 0.1,
-                        // width: screenWidth * 0.18,
-                        decoration:const BoxDecoration(
-                          // color : Colors.red,
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                                colors: [Colors.yellow,Colors.orange,Colors.red,Colors.pink]
-                            )
-                        ),
-                        padding : const EdgeInsets.all(2),
-                        child: Container(
-                          // height: screenHeight * 0.08,
+                GestureDetector(
+                  onTap: (){
+                    PersistentNavBarNavigator.pushNewScreen(
+                      context,
+                      screen: StoryScreen(index : index),
+                      withNavBar: false, // OPTIONAL VALUE. True by default.
+                      pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                    );
+                  },
+                  child: SizedBox(
+                    // color: Colors.red,
+                    width: screenWidth * 0.2,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: screenHeight * 0.1,
                           // width: screenWidth * 0.18,
-                          // margin: EdgeInsets.all(2),
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.white,width: 3),
-                              color: kUnloadedColor,
+                          decoration:const BoxDecoration(
+                            // color : Colors.red,
                               shape: BoxShape.circle,
-                              image: DecorationImage(
-                                  image: NetworkImage(
-                                      Data.horizontalList[index].imageUrl
-                                  ),
-                                  fit: BoxFit.cover
+                              gradient: LinearGradient(
+                                  colors: [Colors.yellow,Colors.orange,Colors.red,Colors.pink]
                               )
+                          ),
+                          padding : const EdgeInsets.all(2),
+                          child: Container(
+                            // height: screenHeight * 0.08,
+                            // width: screenWidth * 0.18,
+                            // margin: EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white,width: 3),
+                                color: kUnloadedColor,
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                    image: NetworkImage(
+                                        Data.horizontalList[index].imageUrl
+                                    ),
+                                    fit: BoxFit.cover
+                                )
 
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      AutoSizeText(
-                        Data.horizontalList[index].name,
-                        // "fsifsiofhsiofhsfioshfois",
-                        softWrap: false,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        // minFontSize: 8,
-                        maxFontSize:13,
-                        minFontSize:13 ,
-                        // minFontSize: screenHeight * 0.00,
-                        maxLines: 1,
-                        style: TextStyle(
-                            color: Colors.black, fontSize: screenHeight * 0.022),
-                      )
-                    ],
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        AutoSizeText(
+                          Data.horizontalList[index].name,
+                          // "fsifsiofhsiofhsfioshfois",
+                          softWrap: false,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          // minFontSize: 8,
+                          maxFontSize:13,
+                          minFontSize:13 ,
+                          // minFontSize: screenHeight * 0.00,
+                          maxLines: 1,
+                          style: TextStyle(
+                              color: Colors.black, fontSize: screenHeight * 0.022),
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(
